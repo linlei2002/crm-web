@@ -1,4 +1,4 @@
-<template>
+'<template>
   <Dialog
     :model-value="dialogVisible"
     :title="dialogProps.title"
