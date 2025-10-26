@@ -12,7 +12,7 @@
       <template #tableHeader="scope">
         <el-button type="primary" :icon="CirclePlus" v-hasPermi="['sys:customer:add']" @click="openDrawer('新增')">新增客户</el-button>
         <el-button type="primary" :icon="Download" v-hasPermi="['sys:customer:export']" @click="downloadFile">导出客户</el-button>
-        <el-button type="primary" :icon="Delete" v-hasPermi="['sys:customer:remove']" @click="batchDelete(scope.selectedListIds)">批量删除</el-button>
+        <el-button type="primary" :icon="Delete" v-hasPermi="['sys:customer:remove']" @click="batchDeleteList(scope.selectedListIds)">批量删除</el-button>
       </template>
 
       <template #operation="scope">
@@ -40,7 +40,7 @@ import { ColumnProps } from '@/components/ProTable/interface'
 import ProTable from '@/components/ProTable/index.vue'
 import { CustomerApi } from '@/api/modules/customer'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { CustomerLevelList, CustomerSourceList, FollowUpStatusList, Gender, GenderList, IsKeyDecisionMakerList } from '@/configs/enum'
+import { CustomerLevelList, CustomerSourceList, FollowUpStatusList, GenderList, IsKeyDecisionMakerList } from '@/configs/enum'
 import { ElMessageBox } from 'element-plus'
 import { useDownload } from '@/hooks/useDownload'
 import { Download, CirclePlus, EditPen, Delete, Share } from '@element-plus/icons-vue'
@@ -188,6 +188,12 @@ const openDrawer = (title: string, row: Partial<any> = {}) => {
 
 const batchDelete = async (ids: any[]) => {
   await useHandleData(CustomerApi.remove, [ids], '删除客户成功')
+  proTable.value.clearable()
+  proTable.value.getTableList()
+}
+
+const batchDeleteList = async (ids: any[]) => {
+  await useHandleData(CustomerApi.remove, ids, '删除客户成功')
   proTable.value.clearable()
   proTable.value.getTableList()
 }
