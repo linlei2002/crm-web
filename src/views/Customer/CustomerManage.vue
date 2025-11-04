@@ -20,22 +20,12 @@
         <el-button type="danger" link :icon="Delete" v-hasPermi="['sys:customer:remove']" @click="batchDelete(scope.row.id)">删除</el-button>
         <el-button type="warning" link :icon="Share" v-hasPermi="['sys:customer:share']" @click="toPublic(scope.row.id)">转入公海</el-button>
       </template>
-
-      <!-- 表格 header 按钮 -->
-      <!-- <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus" v-hasPermi="['sys:department:add']" @click="openDrawer('新增')">新增部门</el-button>
-      </template> -->
-      <!-- 表格操作 -->
-      <!-- <template #operation="scope">
-        <el-button type="primary" link :icon="EditPen" v-hasPermi="['sys:department:edit']" @click="openDrawer('编辑', scope.row)">编辑</el-button>
-        <el-button type="danger" link :icon="Delete" v-hasPermi="['sys:department:remove']" @click="deleteDepartment(scope.row)">删除</el-button>
-      </template> -->
     </ProTable>
     <CustomerDialog ref="dialogRef" />
   </div>
 </template>
 <script setup lang="ts" name="CustomerManage">
-import { ref, reactive } from 'vue'
+import { ref, reactive, defineExpose } from 'vue' // 🚨 引入 defineExpose
 import { ColumnProps } from '@/components/ProTable/interface'
 import ProTable from '@/components/ProTable/index.vue'
 import { CustomerApi } from '@/api/modules/customer'
@@ -203,4 +193,17 @@ const toPublic = async (id: any) => {
   proTable.value.clearable()
   proTable.value.getTableList()
 }
+
+// 🚨 核心修正：添加获取选中行的方法
+const getSelectedRow = () => {
+  // 假设 ProTable 将选中的行数据存储在 selectedList 中
+  const selectedList = proTable.value?.selectedList
+  // 由于 CustomerDialog 是单选场景，我们只取第一个选中的数据
+  return selectedList && selectedList.length > 0 ? selectedList[0] : null
+}
+
+// 🚨 核心修正：将 getSelectedRow 方法暴露给父组件 (CustomerDialog)
+defineExpose({
+  getSelectedRow
+})
 </script>

@@ -96,3 +96,17 @@ export const ProductStatusList: { [key in ProductStatus]: EnumInfo } = {
   [ProductStatus.ONLINE]: { value: 1, label: '上架' },
   [ProductStatus.OFFLINE]: { value: 2, label: '下架' }
 }
+
+export enum ContractsStatus {
+  INITIALIZING,
+  UNDER_REVIEW,
+  APPROVED,
+  REJECTED
+}
+
+export const ContractStatusList: { [key in ContractsStatus]: EnumInfo } = {
+  [ContractsStatus.INITIALIZING]: { value: 0, label: '初始化' },
+  [ContractsStatus.UNDER_REVIEW]: { value: 1, label: '审核中' },
+  [ContractsStatus.APPROVED]: { value: 2, label: '审核通过' },
+  [ContractsStatus.REJECTED]: { value: 3, label: '审核未通过' }
+}
