@@ -13,7 +13,7 @@ export const useDepartmentStore = defineStore({
   }),
   actions: {
     async getDepartmentList() {
-      const res = await DepartmentApi.list({})
+      const res = await DepartmentApi.list()
       this.departmentList = res.data
     }
   },

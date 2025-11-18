@@ -19,16 +19,10 @@
         </el-button>
       </template>
 
-      <template #status="{ row }">
-        <el-tag v-if="row.status === 2" type="success">审核通过</el-tag>
-        <el-tag v-else-if="row.status === 3" type="danger">审核未通过</el-tag>
-        <el-tag v-else-if="row.status === 1" type="warning">审核中</el-tag>
-        <el-tag v-else type="info">初始化</el-tag>
-      </template>
-
       <template #operation="scope">
         <el-button type="primary" link :icon="EditPen" v-hasPermi="['sys:contract:edit']" @click="openDrawer('编辑', scope.row)">编辑</el-button>
         <el-button type="primary" link :icon="View" @click="openDrawer('查看', scope.row)">查看</el-button>
+        <el-button type="primary" link :icon="EditPen" @click="startApproval(scope.row)" v-if="scope.row.status === 0">审核</el-button>
       </template>
     </ProTable>
     <ContractDialog ref="dialogRef" />
@@ -46,6 +40,8 @@ import { CirclePlus, EditPen, View, Document } from '@element-plus/icons-vue'
 import ContractDialog from '@/views/Contract/component/ContractDialog.vue'
 import { ElMessage } from 'element-plus'
 import printJS from 'print-js'
+import { ContractStatusList } from '@/configs/enum'
+import { useHandleData } from '@/hooks/useHandleData'
 
 const proTable = ref()
 const initParam = reactive({})
@@ -72,27 +68,22 @@ const columns: ColumnProps[] = [
   {
     prop: 'status',
     label: '合同状态',
-    enum: [
-      { value: 0, label: '初始化' },
-      { value: 1, label: '审核中' },
-      { value: 2, label: '审核通过' },
-      { value: 3, label: '审核未通过' }
-    ],
-    search: { el: 'select' },
-    width: 120,
-    render: () => ({ tag: 'status' })
+    enum: Object.values(ContractStatusList),
+    width: 120
   },
-  { prop: 'ownerName', label: '签约人', search: { el: 'input' }, width: 120 },
   {
-    prop: 'startAndEndTime',
-    label: '合同有效期',
+    prop: 'startTime',
+    label: '合同开始时间',
     width: 220,
-    search: { el: 'datetimerange', prop: ['startTime', 'endTime'] },
-    formatter: (row: any) => {
-      return `${row.startTime || '-'} 至 ${row.endTime || '-'}`
-    }
+    search: { el: 'input' }
   },
-  { prop: 'operation', label: '操作', fixed: 'right', width: 180 }
+  {
+    prop: 'endTime',
+    label: '合同结束时间',
+    width: 200,
+    search: { el: 'input' }
+  },
+  { prop: 'operation', label: '操作', fixed: 'right', width: 240 }
 ]
 
 const openDrawer = (title: string, row: Partial<any> = {}) => {
@@ -164,7 +155,11 @@ const handlePrint = () => {
 
   // 3. 插入隐藏 DOM 并调用 Print.js
   const printContent = document.getElementById('print-contract-content')
-  printContent.style.display = 'block'
+  if (printContent === null) {
+    console.error(printContent)
+  } else {
+    printContent.style.display = 'block'
+  }
   if (printContent) {
     printContent.innerHTML = combinedHtml
     // console.log(printContent.innerHTML)
@@ -261,5 +256,10 @@ const generateContractBodyHtml = (contract: any): string => {
             </div>
         </div>
     `
+}
+
+const startApproval = async (row: any) => {
+  await useHandleData(ContractsApi.startApproval, { id: row.id }, '发起合同审核')
+  proTable.value.getTableList()
 }
 </script>

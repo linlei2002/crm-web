@@ -1,4 +1,4 @@
-'<template>
+<template>
   <Dialog
     :model-value="dialogVisible"
     :title="dialogProps.title"
@@ -87,6 +87,7 @@ const getDepartmentList = async () => {
 defineExpose({
   acceptParams
 })
+console.log(dialogProps.value)
 const rules = reactive({
   name: [{ required: true, message: '请输入部门名称', trigger: 'blur' }]
 })

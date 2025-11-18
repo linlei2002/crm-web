@@ -122,3 +122,9 @@ export interface TradeArray {
   timeList: string[]
   countList?: number[]
 }
+
+export interface ContractStatistics {
+  contractName: string[]
+  totalAmount: number[]
+  receivedAmount: number[]
+}

@@ -150,3 +150,33 @@ export const OperTypeList: { [key in OperType]: EnumInfo } = {
   [OperType.UPDATE]: { value: 2, label: '修改' },
   [OperType.DELETE]: { value: 3, label: '删除' }
 }
+
+export enum CustomerStatistics {
+  DAY,
+  WEEK,
+  MONTH,
+  DIY
+}
+
+export const CustomerStatisticsList: { [key in ContractsStatus]: EnumInfo } = {
+  [CustomerStatistics.DAY]: { value: 'day', label: '日客户数据统计' },
+  [CustomerStatistics.WEEK]: { value: 'week', label: '周客户数据统计' },
+  [CustomerStatistics.MONTH]: { value: 'monthrange', label: '月客户数据统计' },
+  [CustomerStatistics.DIY]: { value: 'daterange', label: '自定义时间客户统计' }
+}
+
+export enum ContractStatistics {
+  DEFAULT,
+  DAY,
+  WEEK,
+  MONTH,
+  DIY
+}
+
+export const ContractStatisticsList: { [key in ContractStatistics]: EnumInfo } = {
+  [ContractStatistics.DEFAULT]: { value: 'default', label: '默认统计所有合同和金额' },
+  [ContractStatistics.DAY]: { value: 'day', label: '统计某天的合同和金额' },
+  [ContractStatistics.WEEK]: { value: 'week', label: '最近一周的合同和金额' },
+  [ContractStatistics.MONTH]: { value: 'monthrange', label: '统计某个月的合同和金额' },
+  [ContractStatistics.DIY]: { value: 'daterange', label: '自定义时间统计合同和金额' }
+}

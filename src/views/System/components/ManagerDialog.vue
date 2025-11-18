@@ -20,8 +20,8 @@
         <el-form-item v-if="dialogProps.title !== '重置'" label="用户名" prop="account">
           <el-input v-model="dialogProps.row!.account" placeholder="请填写用户名（2-20字）" clearable></el-input>
         </el-form-item>
-        <el-form-item v-if="dialogProps.title !== '重置'" label="昵称" prop="nickname">
-          <el-input v-model="dialogProps.row!.nickname" placeholder="请填写昵称（2-20字）" clearable></el-input>
+        <el-form-item v-if="dialogVisible.title !== '重置'" label="昵称" prop="nickname">
+          <el-input v-model="dialogProps.row!.nickname" placeholder="请填写昵称" clearable></el-input>
         </el-form-item>
         <el-form-item v-if="dialogProps.title === '新增' || dialogProps.title === '重置'" label="密码" prop="password">
           <el-input v-model="dialogProps.row!.password" show-password type="password" placeholder="请填写密码"></el-input>
@@ -70,7 +70,7 @@ import { getManagerInfoApi } from '@/api/modules/manager'
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useDepartmentStore } from '@/store/modules/department'
 const departmentStore = useDepartmentStore()
-const departmentList = departmentStore.getDepartmentList
+const departmentList = departmentStore.departmentList
 const appStore = useAppStoreWithOut()
 interface DialogProps {
   title: string
@@ -98,11 +98,13 @@ const acceptParams = (params: DialogProps): void => {
   params.row = { ...dialogProps.value.row, ...params.row }
   dialogProps.value = { ...dialogProps.value, ...params }
   dialogVisible.value = true
+  console.log(params)
 }
 
 defineExpose({
   acceptParams
 })
+console.log(dialogProps.value)
 
 // 获取角色列表
 const getFormRoleList = async () => {

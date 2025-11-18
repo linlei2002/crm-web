@@ -32,7 +32,7 @@ import { ColumnProps } from '@/components/ProTable/interface'
 import { useHandleData } from '@/hooks/useHandleData'
 import { useAuthButtons } from '@/hooks/useAuthButtons'
 import ProTable from '@/components/ProTable/index.vue'
-import ManagerDialog from '@/views/System/components/ManagerDialog.vue'
+import ManagerDialog from './components/ManagerDialog.vue'
 import { CirclePlus, Delete, EditPen, View } from '@element-plus/icons-vue'
 import { getManagerPage, addManager, editManager, deleteManager } from '@/api/modules/manager'
 import { getRoleList } from '@/api/modules/role'
@@ -85,6 +85,11 @@ const columns: ColumnProps<SysManager.ResManagerList>[] = [
     search: { el: 'input' }
   },
   {
+    prop: 'email',
+    label: '邮箱',
+    width: '150'
+  },
+  {
     prop: 'roleId',
     tag: true,
     label: '角色',
@@ -122,7 +127,7 @@ const deleteAccount = async (params: SysManager.ResManagerList) => {
 
 // 打开 drawer(新增、查看、编辑)
 const dialogRef = ref()
-const openDrawer = (title: string, row: Partial<SysManager.ResManagerList> = {}) => {
+const openDrawer = (title: string, row: Partial<any> = {}) => {
   let params = {
     title,
     row: { ...row },

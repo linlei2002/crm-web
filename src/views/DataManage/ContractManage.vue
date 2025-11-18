@@ -3,7 +3,7 @@
     <div class="select-box">
       <span>筛选：</span>
       <el-select v-model="selectedItem" placeholder="Select" style="width: 240px; margin-left: 20px" @change="clearSelectedItem()">
-        <el-option v-for="item in CustomerStatisticsList" :key="item.value" :label="item.label" :value="item.value" />
+        <el-option v-for="item in ContractStatisticsList" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
 
       <el-date-picker
@@ -41,49 +41,48 @@
       <el-button type="primary" @click="getStatisData" style="margin-left: 20px">搜索</el-button>
     </div>
     <div style="height: 80vh; width: 100%">
-      <CustomerDataChart :data="tradeData || {}" />
+      <ContractDataChart :data="statisticsData || {}" />
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import { ContractStatisticsList } from '@/configs/enum'
 import { onMounted, ref } from 'vue'
-import { TradeArray } from '@/api/interface'
-import { CustomerApi } from '@/api/modules/customer'
-import { convertToTimeRanges } from '@/hooks/useMergeTime'
+import { ContractsApi } from '@/api/modules/contract'
+import { ContractStatistics } from '@/api/interface'
 import { ElMessage } from 'element-plus'
 import moment from 'moment'
-import CustomerDataChart from './components/CustomerDataChart.vue'
-import { CustomerStatisticsList } from '@/configs/enum'
+import { convertToTimeRanges } from '@/hooks/useMergeTime'
+import ContractDataChart from '@/views/DataManage/components/ContractDataChart.vue'
 
-const selectedItem = ref('day')
+const selectedItem = ref('default')
 const checkedValue = ref<Array<Date>>([])
 const startWeekValue = ref<Date>()
 const endWeekValue = ref<Date>()
 
-const tradeData = ref<TradeArray>({
-  timeList: [],
-  countList: []
+const statisticsData = ref<ContractStatistics>({
+  contractName: [],
+  receivedAmount: [],
+  totalAmount: []
 })
 
-interface TradeResponse extends IResponse {
-  data: TradeArray
+interface statisticsResponse extends IResponse {
+  data: ContractStatistics
 }
 
-interface TradeParams {
+interface statisticsParams {
   transactionType: string
   timeRange?: [string, string]
 }
 
 const initData = async () => {
   try {
-    const res = (await CustomerApi.trendData({ transactionType: selectedItem.value })) as TradeResponse
-    console.log(res.data)
-    tradeData.value = res.data
+    const res = (await ContractsApi.getContractStatistics({ statisticsParams: selectedItem.value })) as statisticsResponse
+    statisticsData.value = res.data
   } catch (error) {
-    console.log('获取客户统计数据失败', error)
+    console.error(error)
   }
 }
-
 onMounted(() => {
   initData()
 })
@@ -111,7 +110,7 @@ const clearSelectedItem = () => {
 
 const getStatisData = async () => {
   try {
-    let param: TradeParams = {
+    let param: statisticsParams = {
       transactionType: selectedItem.value
     }
 
@@ -158,11 +157,12 @@ const getStatisData = async () => {
         return
       }
     }
-    const res = (await CustomerApi.trendData(param)) as TradeResponse
-    tradeData.value = res.data
+    const res = (await ContractsApi.getContractStatistics(param)) as statisticsResponse
+    statisticsData.value = res.data
     console.log(param)
+    console.log(statisticsData)
   } catch (error) {
-    console.error('获取交易统计数据失败', error)
+    console.error(error)
   }
 }
 </script>
